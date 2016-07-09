@@ -1,0 +1,25 @@
+<html>
+<head>
+	<script>
+		var xmlHttp = new XMLHttpRequest();
+		var total_counts = 5;
+		var index = 0;
+		var id = setInterval(function(){
+			xmlHttp.open("GET", "163mail_register.php", true);
+			xmlHttp.send(null);
+			xmlHttp.onreadystatechange = function(){
+				if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+					if (xmlHttp.responseText == "OK") {
+						if( ++index == total_counts ){
+							clearInterval(id);
+						}
+					}
+				}
+			}
+		}, 2000);
+	</script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<html>
+<head>
+	<script>
+		var today = new Date();
+		var y = today.getFullYear();
+		var m = today.getMonth() + 1;
+		var d = today.getDate() - 1;
+		if (m < 10) m = "0" + m;
+		var filename = "fundlist_" + y + m + d + ".txt";
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.open("GET", "getTotalCounts.php", true);
+		xmlHttp.send(null);
+		xmlHttp.onreadystatechange = function(){
+			if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+				var total_counts = xmlHttp.responseText;
+				document.getElementById("text").innerHTML = "共"+total_counts+"页, 系统正在下载数据, 请耐心等待...";
+				var index = 1;
+				var id = setInterval(function(){
+					xmlHttp.open("GET", "fundlist.php?page="+index, true);
+					xmlHttp.send(null);
+					xmlHttp.onreadystatechange = function(){
+						if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+							if (xmlHttp.responseText == "OK") {
+								if( ++index > total_counts ){
+									document.write("<a href=\"download.php?filename=" + filename + "\">点击下载</a>");
+									clearInterval(id);
+								}else{
+									document.getElementById("text").innerHTML = "共 "+total_counts+" 页, 当前是第 "+(index-1)+" 页, 请稍等...";
+								}
+							}
+						}
+					}
+				}, 5000);
+			}		
+		}
+	</script>
+</head>
+<body>
+	<div id="text">正在获取数据信息... </div>
+</body>
+</html>
